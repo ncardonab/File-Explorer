@@ -69,8 +69,9 @@ body {
 }
 
 .navbar {
-  position: -webkit-sticky;
-  position: sticky;
+  /* position: -webkit-sticky;  this Property and sticky doesn't match with overflow x property*/
+  position: fixed;
+  width: 94.9%;
   top: 0;
   padding: 35px;
   color: var(--text-color);
