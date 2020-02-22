@@ -5,3 +5,7 @@ document.querySelector(".hamburguer-menu").addEventListener("click", event => {
   document.querySelector(".hamburguer-menu").classList.toggle("change");
   sidebar.classList.toggle("change");
 });
+
+window.addEventListener("click", event => {
+  console.log(event);
+});

@@ -1,5 +1,6 @@
 * {
   margin: 0;
+  overflow-x: hidden; /* Quit the horizontal scrolling option*/
   --main-color: rgb(255, 255, 255);
   --primary-color: rgb(115, 106, 185);
   --secondary-color: rgb(244, 145, 152);
@@ -16,6 +17,7 @@ body {
 }
 
 .side-bar {
+  overflow-x: hidden;
   position: absolute;
   z-index: 999;
   background-color: var(--tertiary-color);
@@ -41,7 +43,7 @@ body {
 }
 
 .side-bar.change {
-  transform: translateX(-20rem);
+  transform: translateX(-22rem);
   transition: all 0.8s;
 }
 
