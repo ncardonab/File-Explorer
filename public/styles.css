@@ -89,8 +89,8 @@ body {
 
 .row {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 1.1em;
+  justify-content: space-around;
+  margin-bottom: 0.55em;
 }
 
 i {
@@ -99,7 +99,39 @@ i {
 }
 
 p {
-  font-size: 15px;
-  margin: 5px;
+  font-size: 16px;
   cursor: pointer;
+  transform: translate(15px, -25px);
+  z-index: -900;
+}
+
+.menu {
+  width: 12rem;
+  height: 8rem;
+  background-color: #f4f4f4;
+  color: #333333;
+  box-shadow: 2px 2px 6px -4px #999;
+  border-radius: 5.5px;
+  list-style: none;
+  padding-left: 0;
+  position: fixed; /*Makes the menu element position fixed as you please*/
+}
+
+.menu.off {
+  opacity: 0;
+}
+
+.menu-item {
+  height: 1.5rem;
+  line-height: 1.5rem;
+  font-size: 1rem;
+  font-weight: 100;
+  padding: 0 1rem;
+  cursor: pointer;
+}
+
+.menu-item:hover,
+.menu-item:active {
+  color: #000;
+  font-weight: 500;
 }
