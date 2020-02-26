@@ -1,0 +1,26 @@
+{
+  "name": "file-explorer",
+  "version": "1.0.0",
+  "description": "File explorer for some operative systems",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ncardonab/File-Explorer.git"
+  },
+  "keywords": [
+    "File",
+    "Explorer",
+    "SO",
+    "node",
+    "child_process"
+  ],
+  "author": "nicolas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ncardonab/File-Explorer/issues"
+  },
+  "homepage": "https://github.com/ncardonab/File-Explorer#readme"
+}
