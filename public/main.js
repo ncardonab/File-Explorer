@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   folders.forEach(folder => folder.addEventListener("contextmenu", showMenu));
 
   menu.addEventListener("mouseleave", hideMenu);
+  fetchInfo();
 });
 
 window.addEventListener("contextmenu", event => {
@@ -35,4 +36,12 @@ function showMenu(event) {
 function hideMenu() {
   const menu = document.querySelector(".menu");
   menu.classList.add("off");
+}
+
+function renderInfo() {}
+
+function fetchInfo() {
+  fetch(`http://localhost:3000/api/files?directory=home`)
+    .then(response => response.json())
+    .then(data => console.log(data));
 }

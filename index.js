@@ -9,11 +9,24 @@ app.set("port", 3000);
 
 app.use(morgan("dev"));
 
+/**
+ * @description Adding the CORS header that allows to request data from the same domain
+ **/
+app.use((request, response, next) => {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Methods", "GET, PUT, POST");
+  response.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 app.get("/", (request, response) => {
   response.send("all good");
 });
 
-app.get("/api/file", (request, response) => {
+app.get("/api/files", (request, response) => {
   const directoryPath = path.join(__dirname, request.query.directory);
   const commandResults = execSync("ls -l", { cwd: directoryPath })
     .toString()
@@ -28,10 +41,7 @@ app.get("/api/file", (request, response) => {
     if (result[0].slice(0, 1) === "-") {
       const file = {
         filename: result[8].slice(0, result[8].indexOf(".")),
-        extension: result[8].slice(
-          result[8].indexOf("."),
-          result[0].length - 1
-        ),
+        extension: result[8].slice(result[8].indexOf("."), result[0].length),
         type: result[0].slice(0, 1) === "d" ? "directory" : "file",
         permissions: result[0].slice(1, result[0].length - 1),
         owner: result[2]
