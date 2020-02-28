@@ -1,15 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // hiding the context menu
   const menu = document.querySelector(".menu");
   menu.classList.add("off");
 
-  let files = document.querySelectorAll(".file");
-  files.forEach(file => file.addEventListener("contextmenu", showMenu));
+  fetchInfo("home/nicolas").then(results => {
+    results.map(info => {
+      // Rendering the info in the UI
+      renderFilesAndFolders(info);
+    });
 
-  let folders = document.querySelectorAll(".folder");
-  folders.forEach(folder => folder.addEventListener("contextmenu", showMenu));
+    // Listener for file type
+    let files = document.querySelectorAll(".file");
+    files.forEach(file => file.addEventListener("contextmenu", showMenu));
 
-  menu.addEventListener("mouseleave", hideMenu);
-  fetchInfo();
+    // Listener for folder type
+    let folders = document.querySelectorAll(".directory");
+    folders.forEach(folder => folder.addEventListener("contextmenu", showMenu));
+
+    // hide the menu when the mouse leave the menu
+    menu.addEventListener("mouseleave", hideMenu);
+  });
 });
 
 window.addEventListener("contextmenu", event => {
@@ -26,7 +36,6 @@ document.querySelector(".hamburguer-menu").addEventListener("click", event => {
 function showMenu(event) {
   event.preventDefault();
 
-  console.log(event.clientX, event.clientY);
   let menu = document.querySelector(".menu");
   menu.classList.remove("off");
   menu.style.top = `${event.clientY}px`;
@@ -38,10 +47,27 @@ function hideMenu() {
   menu.classList.add("off");
 }
 
-function renderInfo() {}
+function renderFilesAndFolders(info) {
+  // Creates the card
+  const icon =
+    info.type === "file"
+      ? `<i class="far fa-file-word"></i>
+         <p>${info.filename}${info.extension}</p>`
+      : `<i class="fas fa-folder"></i>
+         <p>${info.directory_name}</p>`;
 
-function fetchInfo() {
-  fetch(`http://localhost:3000/api/files?directory=home`)
+  const card = `
+  <div class="${info.type}">
+    ${icon}
+  </div>`;
+
+  const filesContainer = document.querySelector(".files-container");
+
+  filesContainer.innerHTML += card;
+}
+
+function fetchInfo(directory) {
+  return fetch(`http://localhost:3000/api/files?directory=${directory}`)
     .then(response => response.json())
-    .then(data => console.log(data));
+    .then(data => data);
 }

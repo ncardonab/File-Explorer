@@ -87,10 +87,12 @@ body {
   color: var(--quaternary-color);
 }
 
-.row {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 0.55em;
+.file {
+  display: inline-block;
+}
+
+.directory {
+  display: inline-block;
 }
 
 i {
@@ -118,7 +120,7 @@ p {
 }
 
 .menu.off {
-  opacity: 0;
+  transform: translate(-300%, -300%);
 }
 
 .menu-item {
