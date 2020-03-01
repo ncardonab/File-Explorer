@@ -18,6 +18,11 @@ class Folder {
 }
 
 class UI {
+  /**
+   * @method showMenu
+   * @description Method that shows the customize contextmenu in the right-click coordinates
+   * @param {contextmenu} event
+   */
   static showMenu(event) {
     event.preventDefault();
     let menu = document.querySelector(".menu");
@@ -26,11 +31,20 @@ class UI {
     menu.style.left = `${event.clientX}px`;
   }
 
+  /**
+   * @method hideMenu
+   * @description Method that adds 'off' class in the contextmenu and the css file takes care of that
+   */
   static hideMenu() {
     const menu = document.querySelector(".menu");
     menu.classList.add("off");
   }
 
+  /**
+   * @method renderFilesAndFolders
+   * @description Method that renders the cards of the file or folder into the UI
+   * @param {Array} info
+   */
   static renderFilesAndFolders(info) {
     // Creates the card
     const icon =
@@ -49,9 +63,24 @@ class UI {
 
     filesContainer.innerHTML += card;
   }
+
+  /**
+   * @method unfoldSidebar
+   * @description Method that unfold the sidebar once the hamburguer menu was clicked
+   */
+  static unfoldSidebar() {
+    const sidebar = document.querySelector(".side-bar");
+    document.querySelector(".hamburguer-menu").classList.toggle("change");
+    sidebar.classList.toggle("change");
+  }
 }
 
 class API {
+  /**
+   * @method getFilesAndFolders
+   * @description Method that brings the files and folders info from the API
+   * @param {String} directory
+   */
   static getFilesAndFolders(directory) {
     let filesAndFolders = [];
     return fetch(`http://localhost:3000/api/files?directory=${directory}`)
@@ -74,6 +103,12 @@ class API {
       });
   }
 
+  /**
+   * @method getFileOrFolder
+   * @description Method that match the info from the API with the selected from the UI
+   * @param {Array} filesOrFolders
+   * @param {contextmenu} event
+   */
   static getFileOrFolder(filesOrFolders, event) {
     // Current class element is the card itself or the childs
     const elementClass =
@@ -106,13 +141,13 @@ class API {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // hiding the context menu
   const menu = document.querySelector(".menu");
+  // Hides the context menu
   menu.classList.add("off");
 
   API.getFilesAndFolders("home/nicolas").then(filesAndFolders => {
     filesAndFolders.map(info => {
-      // Rendering the info in the UI
+      // Rendering the info into the UI
       UI.renderFilesAndFolders(info);
     });
 
@@ -130,24 +165,23 @@ document.addEventListener("DOMContentLoaded", () => {
     let folders = document.querySelectorAll(".directory");
     folders.forEach(folder =>
       folder.addEventListener("contextmenu", event => {
-        // showing the context menu
+        // Showing the context menu
         UI.showMenu(event);
         console.log(API.getFileOrFolder(filesAndFolders, event)[0].name);
       })
     );
 
-    // hide the menu when the mouse leave the menu
+    // Side the menu when the mouse leave the menu
     menu.addEventListener("mouseleave", UI.hideMenu);
   });
 });
 
+// Preventing that the original browser context menu appears
 window.addEventListener("contextmenu", event => {
   event.preventDefault();
 });
 
-// hamburguer menu function
-document.querySelector(".hamburguer-menu").addEventListener("click", event => {
-  const sidebar = document.querySelector(".side-bar");
-  document.querySelector(".hamburguer-menu").classList.toggle("change");
-  sidebar.classList.toggle("change");
-});
+// Hamburguer menu function unfolds sidebar
+document
+  .querySelector(".hamburguer-menu")
+  .addEventListener("click", UI.unfoldSidebar);
