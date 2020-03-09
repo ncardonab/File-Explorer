@@ -6,27 +6,56 @@
   --secondary-color: rgb(244, 145, 152);
   --tertiary-color: rgb(177, 170, 213);
   --quaternary-color: rgb(66, 69, 112);
+  --first-alt: rgb(43, 42, 47);
+  --second-alt: rgb(51, 54, 63);
+  --firts-text-color: rgb(37, 200, 246);
+  --second-text-color: rgb(40, 211, 63);
   --text-color: #e7e7e7;
-  --shadow: 0 0 10px -2px rgba(67, 75, 70, 0.63);
+  --shadow: 0 0 10px -2px rgba(0, 0, 0, 0.63);
   --black-shadow: 5px 5px 8px -2px rgba(0, 0, 0, 0.2);
   --illumination: -5px -5px 8px -2px rgb(255, 255, 255);
 }
 
 body {
-  font-family: "Roboto";
+  font-family: "Lato", sans-serif;
+  /* font-family: "Sen", sans-serif; */
+  /* font-family: "Roboto", sans-serif; */
 }
 
 .side-bar {
   overflow-x: hidden;
   position: absolute;
   z-index: 999;
-  background-color: var(--tertiary-color);
+  background-color: var(--first-alt);
   height: 200vh;
   width: 300px;
   color: rgb(250, 250, 250);
   right: -22rem;
   transition: 0.6s ease;
   box-shadow: var(--shadow);
+}
+
+.card-properties {
+  background-color: var(--second-alt);
+  width: 200px;
+  margin-top: 60px;
+  margin-left: 25px;
+  padding: 20px;
+  border-radius: 5.5px;
+  box-shadow: var(--shadow);
+}
+
+.card-properties > h4 {
+  color: var(--firts-text-color);
+  font-size: 20px;
+  margin: 4px 0 4px 0;
+}
+.card-properties > div {
+  font-size: 16px;
+}
+
+.card-properties > div > span {
+  font-weight: bold;
 }
 
 .hamburguer-menu {
@@ -50,7 +79,7 @@ body {
 .line {
   width: 100%;
   height: 3px;
-  background-color: var(--quaternary-color);
+  background-color: var(--text-color);
   border-radius: 5px;
   transition: all 0.8s;
 }
@@ -75,7 +104,7 @@ body {
   top: 0;
   padding: 35px;
   color: var(--text-color);
-  background-color: var(--primary-color);
+  background-color: var(--second-alt);
   box-shadow: var(--shadow);
   border-radius: 0 0 10px 10px;
   font-size: 18px;

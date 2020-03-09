@@ -73,6 +73,43 @@ class UI {
     document.querySelector(".hamburguer-menu").classList.toggle("change");
     sidebar.classList.toggle("change");
   }
+
+  /**
+   * @method renderFileOrFolderProperties
+   * @description Method that renders a card into the sidebar UI with the element's info that was selected
+   * @param {object} properties
+   */
+  static renderFileOrFolderProperties(properties) {
+    UI.unfoldSidebar();
+    const sidebar = document.querySelector(".side-bar");
+
+    const card = document.createElement("div");
+    card.classList.add("properties");
+    if (properties.type === "file") {
+      const { name, extension, type, permissions, owner } = properties;
+      const fileCard = `
+        <div class="card-properties">
+          <h4>${name}</h4>
+          <div><span>Extension: </span>${extension}</div>
+          <div><span>Type: </span>${type}</div>
+          <div><span>Permissions: </span>${permissions}</div>
+          <div><span>Owner: </span>${owner}</div>
+        </div>`;
+      card.innerHTML = fileCard;
+    } else {
+      const { name, type, permissions, owner } = properties;
+      const folderCard = `
+        <div class="card-properties">
+          <h4>${name}</h4>
+          <div><span>Type: </span>${type}</div>
+          <div><span>Permissions: </span>${permissions}</div>
+          <div><span>Owner: </span>${owner}</div>
+        </div>`;
+      card.innerHTML = folderCard;
+    }
+
+    sidebar.innerHTML = card.innerHTML;
+  }
 }
 
 class API {
@@ -157,7 +194,13 @@ document.addEventListener("DOMContentLoaded", () => {
       file.addEventListener("contextmenu", event => {
         // showing the context menu
         UI.showMenu(event);
-        console.log(API.getFileOrFolder(filesAndFolders, event)[0].name);
+
+        const propertiesOption = document.querySelector(".menu").children[0];
+        const properties = API.getFileOrFolder(filesAndFolders, event)[0];
+
+        propertiesOption.addEventListener("click", () => {
+          UI.renderFileOrFolderProperties(properties);
+        });
       })
     );
 
@@ -167,7 +210,13 @@ document.addEventListener("DOMContentLoaded", () => {
       folder.addEventListener("contextmenu", event => {
         // Showing the context menu
         UI.showMenu(event);
-        console.log(API.getFileOrFolder(filesAndFolders, event)[0].name);
+
+        const propertiesOption = document.querySelector(".menu").children[0];
+        const properties = API.getFileOrFolder(filesAndFolders, event)[0];
+
+        propertiesOption.addEventListener("click", () => {
+          UI.renderFileOrFolderProperties(properties);
+        });
       })
     );
 
