@@ -1,7 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
-const { exec, execSync } = require("child_process");
+const { exec, execSync, spawnSync } = require("child_process");
 
 const app = express();
 
@@ -12,22 +12,22 @@ app.use(morgan("dev"));
 /**
  * @description Adding the CORS header that allows to request data from the same domain
  **/
-app.use((request, response, next) => {
-  response.header("Access-Control-Allow-Origin", "*");
-  response.header("Access-Control-Allow-Methods", "GET, PUT, POST");
-  response.header(
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+  res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-reqed-With, Content-Type, Accept"
   );
   next();
 });
 
-app.get("/", (request, response) => {
-  response.send("all good");
+app.get("/", (req, res) => {
+  res.send("all good");
 });
 
-app.get("/api/files", (request, response) => {
-  const directoryPath = path.join(__dirname, request.query.directory);
+app.get("/api/files", (req, res) => {
+  const directoryPath = path.join(__dirname, req.query.directory);
   const commandResults = execSync("ls -l", { cwd: directoryPath })
     .toString()
     .split("\n");
@@ -57,7 +57,22 @@ app.get("/api/files", (request, response) => {
       fileFolderList.push(directory);
     }
   });
-  response.json(fileFolderList);
+  res.json(fileFolderList);
+});
+
+app.put("/api/files/rename", (req, res) => {
+  const currentWorkDir = path.join(__dirname, req.query.directory);
+  console.log(currentWorkDir);
+  const newName = req.query.newName;
+  const oldName = req.query.oldName;
+  try {
+    execSync(`mv ${oldName} ${newName}`, {
+      cwd: currentWorkDir
+    });
+    res.status(200).send("Everything went ok!");
+  } catch (error) {
+    res.status(400).send(`Seems that something went wrong. Error: ${error}`);
+  }
 });
 
 const port = process.env.PORT || 3000;
