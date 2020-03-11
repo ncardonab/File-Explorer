@@ -60,6 +60,6 @@ app.get("/api/files", (request, response) => {
   response.json(fileFolderList);
 });
 
-app.listen("3000", () =>
-  console.log(`Our app is running on port ${app.get("port")}`)
-);
+const port = process.env.PORT || 3000;
+
+app.listen("3000", () => console.log(`Our app is running on port ${port}`));
