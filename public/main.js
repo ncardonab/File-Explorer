@@ -110,6 +110,25 @@ class UI {
 
     sidebar.innerHTML = card.innerHTML;
   }
+
+  /**
+   * @method rename
+   * @description Method that renames the selected file or folder
+   * @param {string} oldName
+   * @param {string} newName
+   */
+  static rename(oldName) {
+    const inputForm = `
+    <div class="form">
+      If it's a file don't forget the extension - [${oldName}]
+      <label for="name-input">New file or folder name</label>
+      <input type="text" id="name-input" class="input" placeholder="Type here the new name"></input>
+      <button type="submit" class="btn">Rename</button>
+    </div>`;
+
+    const sidebar = document.querySelector(".side-bar");
+    sidebar.innerHTML = inputForm;
+  }
 }
 
 class API {
