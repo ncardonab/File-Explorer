@@ -18,6 +18,25 @@ class Folder {
 }
 
 class UI {
+  static optionsHandler(filesAndFolders, event, menu) {
+    // showing the context menu
+    UI.showMenu(event);
+
+    const options = menu.children;
+
+    const properties = API.getFileOrFolder(filesAndFolders, event)[0];
+
+    const propertiesOption = options[0];
+    propertiesOption.addEventListener("click", () => {
+      UI.renderFileOrFolderProperties(properties);
+    });
+
+    const renameOption = options[1];
+    renameOption.addEventListener("click", () => {
+      UI.rename(properties.name);
+    });
+  }
+
   /**
    * @method showMenu
    * @description Method that shows the customize contextmenu in the right-click coordinates
@@ -118,9 +137,11 @@ class UI {
    * @param {string} newName
    */
   static rename(oldName) {
+    UI.unfoldSidebar();
     const inputForm = `
-    <div class="form">
-      If it's a file don't forget the extension - [${oldName}]
+    <div class="rename-form">
+      <h4>If it's a file don't forget the extension</h4>
+      <div><span>Name: </span> ${oldName}</div>
       <label for="name-input">New file or folder name</label>
       <input type="text" id="name-input" class="input" placeholder="Type here the new name"></input>
       <button type="submit" class="btn">Rename</button>
@@ -211,15 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let files = document.querySelectorAll(".file");
     files.forEach(file =>
       file.addEventListener("contextmenu", event => {
-        // showing the context menu
-        UI.showMenu(event);
-
-        const propertiesOption = document.querySelector(".menu").children[0];
-        const properties = API.getFileOrFolder(filesAndFolders, event)[0];
-
-        propertiesOption.addEventListener("click", () => {
-          UI.renderFileOrFolderProperties(properties);
-        });
+        UI.optionsHandler(filesAndFolders, event, menu);
       })
     );
 
@@ -227,19 +240,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let folders = document.querySelectorAll(".directory");
     folders.forEach(folder =>
       folder.addEventListener("contextmenu", event => {
-        // Showing the context menu
-        UI.showMenu(event);
-
-        const propertiesOption = document.querySelector(".menu").children[0];
-        const properties = API.getFileOrFolder(filesAndFolders, event)[0];
-
-        propertiesOption.addEventListener("click", () => {
-          UI.renderFileOrFolderProperties(properties);
-        });
+        UI.optionsHandler(filesAndFolders, event, menu);
       })
     );
 
-    // Side the menu when the mouse leave the menu
+    // Hide the menu when the mouse leave the menu
     menu.addEventListener("mouseleave", UI.hideMenu);
   });
 });

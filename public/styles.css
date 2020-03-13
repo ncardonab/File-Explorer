@@ -35,7 +35,10 @@ body {
   box-shadow: var(--shadow);
 }
 
-.card-properties {
+/* Properties container*/
+/* Rename form container*/
+.card-properties,
+.rename-form {
   background-color: var(--second-alt);
   width: 200px;
   margin-top: 60px;
@@ -45,7 +48,9 @@ body {
   box-shadow: var(--shadow);
 }
 
-.card-properties > h4 {
+/* Properties */
+.card-properties > h4,
+.rename-form > h4 {
   color: var(--firts-text-color);
   font-size: 20px;
   margin: 4px 0 4px 0;
@@ -54,8 +59,29 @@ body {
   font-size: 16px;
 }
 
-.card-properties > div > span {
+.card-properties > div > span,
+.rename-form > div > span {
   font-weight: bold;
+}
+
+/* Rename */
+.input {
+  margin-top: 7px;
+  margin-bottom: 10px;
+  padding: 7px;
+  border-style: none;
+  border-radius: 5.5px;
+}
+
+.btn {
+  border-style: none;
+  border-radius: 5.5px;
+  background-color: var(--second-text-color);
+  color: azure;
+  padding: 7px;
+  font-weight: 900;
+  font-size: 12px;
+  cursor: pointer;
 }
 
 .hamburguer-menu {
