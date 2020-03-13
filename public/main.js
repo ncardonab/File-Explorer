@@ -18,6 +18,13 @@ class Folder {
 }
 
 class UI {
+  /**
+   * @method optionsHandler
+   * @description Method that handles the options of right click menu
+   * @param {Array} filesAndFolders
+   * @param {EventListener} event
+   * @param {Node} menu
+   */
   static optionsHandler(filesAndFolders, event, menu) {
     // showing the context menu
     UI.showMenu(event);
@@ -33,7 +40,7 @@ class UI {
 
     const renameOption = options[1];
     renameOption.addEventListener("click", () => {
-      UI.rename(properties.name);
+      UI.rename(properties);
     });
   }
 
@@ -132,23 +139,34 @@ class UI {
 
   /**
    * @method rename
-   * @description Method that renames the selected file or folder
+   * @description Method that renames the selected file or folder calling the API static function
    * @param {string} oldName
    * @param {string} newName
    */
-  static rename(oldName) {
+  static rename(properties) {
+    const { name, type, extension } = properties;
+
     UI.unfoldSidebar();
     const inputForm = `
     <div class="rename-form">
       <h4>If it's a file don't forget the extension</h4>
-      <div><span>Name: </span> ${oldName}</div>
+      <div><span>Name: </span> ${name}</div>
       <label for="name-input">New file or folder name</label>
-      <input type="text" id="name-input" class="input" placeholder="Type here the new name"></input>
-      <button type="submit" class="btn">Rename</button>
+      <input type="text" id="name-input" class="new-name input" placeholder="Type here the new name"></input>
+      <button type="submit" class="submit-btn btn">Rename</button>
     </div>`;
 
     const sidebar = document.querySelector(".side-bar");
     sidebar.innerHTML = inputForm;
+
+    const newName = document.querySelector(".new-name");
+    const submit = document.querySelector(".submit-btn");
+
+    submit.addEventListener("click", () => {
+      const directory = "home/nicolas";
+      const oldName = type === "file" ? `${name}${extension}` : name;
+      API.rename(directory, oldName, newName.value);
+    });
   }
 }
 
@@ -214,6 +232,20 @@ class API {
       item = filesOrFolders.filter(folder => folder.name === directoryName);
     }
     return item;
+  }
+
+  /**
+   * @method rename
+   * @description Method that makes a PUT request with the query params to the backend API
+   * @param {String} directory
+   * @param {String} oldName
+   * @param {String} newName
+   */
+  static rename(directory, oldName, newName) {
+    fetch(
+      `http://localhost:3000/api/files/rename?directory=${directory}&oldName=${oldName}&newName=${newName}`,
+      { method: "PUT" }
+    );
   }
 }
 
