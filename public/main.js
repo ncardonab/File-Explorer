@@ -181,7 +181,7 @@ class UI {
     dirs.map((name, index) => {
       const dir =
         index < dirs.length - 1
-          ? `<li class="breadcrumb-item"><a class="breadcrumb-link" href="#">${name}</a> ></li>`
+          ? `<li class="breadcrumb-item"><a class="breadcrumb-link" href="#">${name}</a></li>`
           : `<li class="breadcrumb-item current-dir" aria-current="page">${name}</li>`;
       breadcrumbs.innerHTML += dir;
     });
@@ -291,6 +291,8 @@ document.addEventListener("DOMContentLoaded", () => {
   API.getRoute(DIRECTORY).then(route => {
     // Renders the current work directory in the navbar
     UI.renderRoute(route);
+    const absoluteRoute = document.querySelector(".breadcrumbs");
+    console.log(absoluteRoute);
   });
 
   API.getFilesAndFolders(DIRECTORY).then(filesAndFolders => {

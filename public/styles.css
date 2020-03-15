@@ -143,15 +143,21 @@ body {
 
 .breadcrumb-item {
   display: inline-block;
-  margin: 0 3px 0 3px;
 }
 
 .breadcrumb-link {
   text-decoration: none;
   color: var(--second-text-color);
+  transition: 0.3s ease;
+}
+
+.breadcrumb-item:not(:last-of-type)::after {
+  content: ">";
+  margin: 0 5px;
 }
 
 .breadcrumb-link:hover {
+  transition: 0.3s ease;
   color: rgb(35, 170, 53);
 }
 

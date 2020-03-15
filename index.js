@@ -41,7 +41,10 @@ app.get("/api/files", (req, res) => {
     if (result[0].slice(0, 1) === "-") {
       const file = {
         filename: result[8].slice(0, result[8].indexOf(".")),
-        extension: result[8].slice(result[8].indexOf("."), result[0].length),
+        extension: result[8].slice(
+          result[8].indexOf("."),
+          result[0].length + 1
+        ),
         type: result[0].slice(0, 1) === "d" ? "directory" : "file",
         permissions: result[0].slice(1, result[0].length - 1),
         owner: result[2]
