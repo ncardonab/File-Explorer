@@ -75,6 +75,14 @@ app.put("/api/files/rename", (req, res) => {
   }
 });
 
+app.get("/api/files/route", (req, res) => {
+  const filename = req.query.file;
+  const directoryPath = {
+    cwd: path.join(__dirname, filename)
+  };
+  res.json(directoryPath);
+});
+
 const port = process.env.PORT || 3000;
 
 app.listen("3000", () => console.log(`Our app is running on port ${port}`));

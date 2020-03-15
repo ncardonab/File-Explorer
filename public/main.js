@@ -168,6 +168,26 @@ class UI {
       API.rename(directory, oldName, newName.value);
     });
   }
+
+  /**
+   * @method renderRoute
+   * @description Method that renders the absolute route in the navbar
+   * @param {Object} route
+   */
+  static renderRoute(route) {
+    const dirs = route.cwd.split("\\");
+    const breadcrumbs = document.createElement("ul");
+    breadcrumbs.className = "breadcrumbs";
+    dirs.map((name, index) => {
+      const dir =
+        index < dirs.length - 1
+          ? `<li class="breadcrumb-item"><a class="breadcrumb-link" href="#">${name}</a> ></li>`
+          : `<li class="breadcrumb-item current-dir" aria-current="page">${name}</li>`;
+      breadcrumbs.innerHTML += dir;
+    });
+
+    document.querySelector(".navbar").append(breadcrumbs);
+  }
 }
 
 class API {
@@ -247,14 +267,33 @@ class API {
       { method: "PUT" }
     );
   }
+
+  /**
+   * @method getRoute
+   * @description Method that fetch the route (cwd) from the API
+   * @param {String} filename
+   */
+  static getRoute(filename) {
+    return fetch(`http://localhost:3000/api/files/route?file=${filename}`)
+      .then(response => response.json())
+      .then(data => data);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const DIRECTORY = "home/nicolas";
+
   const menu = document.querySelector(".menu");
+
   // Hides the context menu
   menu.classList.add("off");
 
-  API.getFilesAndFolders("home/nicolas").then(filesAndFolders => {
+  API.getRoute(DIRECTORY).then(route => {
+    // Renders the current work directory in the navbar
+    UI.renderRoute(route);
+  });
+
+  API.getFilesAndFolders(DIRECTORY).then(filesAndFolders => {
     filesAndFolders.map(info => {
       // Rendering the info into the UI
       UI.renderFilesAndFolders(info);

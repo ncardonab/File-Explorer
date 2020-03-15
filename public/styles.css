@@ -128,12 +128,35 @@ body {
   position: fixed;
   width: 94.9%;
   top: 0;
-  padding: 35px;
+  padding: 30px;
   color: var(--text-color);
   background-color: var(--second-alt);
   box-shadow: var(--shadow);
   border-radius: 0 0 10px 10px;
   font-size: 18px;
+}
+
+.breadcrumbs {
+  padding: 10px;
+  font-size: 20px;
+}
+
+.breadcrumb-item {
+  display: inline-block;
+  margin: 0 3px 0 3px;
+}
+
+.breadcrumb-link {
+  text-decoration: none;
+  color: var(--second-text-color);
+}
+
+.breadcrumb-link:hover {
+  color: rgb(35, 170, 53);
+}
+
+.current-dir {
+  font-weight: 900;
 }
 
 .files-container {
