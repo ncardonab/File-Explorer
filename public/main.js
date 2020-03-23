@@ -19,13 +19,13 @@ class Folder {
 
 class UI {
   /**
-   * @method optionsHandler
+   * @method menuOptionsHandler
    * @description Method that handles the options of right click menu
    * @param {Array} filesAndFolders
    * @param {EventListener} event
    * @param {Node} menu
    */
-  static optionsHandler(filesAndFolders, event, menu) {
+  static menuOptionsHandler(filesAndFolders, event, menu) {
     // showing the context menu
     UI.showMenu(event);
 
@@ -175,7 +175,7 @@ class UI {
    * @param {Object} route
    */
   static renderRoute(route) {
-    const dirs = route.cwd.split("\\");
+    const dirs = route.split("\\");
     const breadcrumbs = document.createElement("ul");
     breadcrumbs.className = "breadcrumbs";
     dirs.map((name, index) => {
@@ -187,6 +187,30 @@ class UI {
     });
 
     document.querySelector(".navbar").append(breadcrumbs);
+  }
+
+  /**
+   * @method filesAndFoldersEventHandler
+   * @description Method that fetch the files and folders, renderize it into the UI and apply for each of them a event listener
+   * @param {String} directory
+   * @param {Element} menu
+   */
+  static filesAndFoldersEventHandler(filesAndFolders, menu) {
+    // Listener for file type
+    let files = document.querySelectorAll(".file");
+    files.forEach(file =>
+      file.addEventListener("contextmenu", event => {
+        UI.menuOptionsHandler(filesAndFolders, event, menu);
+      })
+    );
+
+    // Listener for folder type
+    let folders = document.querySelectorAll(".directory");
+    folders.forEach(folder =>
+      folder.addEventListener("contextmenu", event => {
+        UI.menuOptionsHandler(filesAndFolders, event, menu);
+      })
+    );
   }
 }
 
@@ -271,28 +295,75 @@ class API {
   /**
    * @method getRoute
    * @description Method that fetch the route (cwd) from the API
-   * @param {String} filename
+   * @param {String} directoryRoute
    */
-  static getRoute(filename) {
-    return fetch(`http://localhost:3000/api/files/route?file=${filename}`)
-      .then(response => response.json())
+  static getRoute(directoryRoute) {
+    return fetch(
+      `http://localhost:3000/api/files/route?directoryRoute=${directoryRoute}`
+    )
+      .then(response => response.text())
       .then(data => data);
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const DIRECTORY = "home/nicolas";
-
+  const DIRECTORY = `C:\\Users\\nclsc\\developer\\front-end\\file-explorer\\home\\nicolas`;
   const menu = document.querySelector(".menu");
 
   // Hides the context menu
   menu.classList.add("off");
 
+  // Hide the menu when the mouse leave the menu
+  menu.addEventListener("mouseleave", UI.hideMenu);
+
   API.getRoute(DIRECTORY).then(route => {
     // Renders the current work directory in the navbar
     UI.renderRoute(route);
-    const absoluteRoute = document.querySelector(".breadcrumbs");
-    console.log(absoluteRoute);
+
+    const navbar = document.querySelector(".navbar");
+
+    navbar.addEventListener("click", event => {
+      if (event.target.className === "breadcrumb-link") {
+        // Getting the relative route where we are standing
+        const relativeRoute = event.target.textContent;
+        // Getting the absolute route where we are standing
+        const absoluteRoute = Array.from(
+          document.querySelector(".breadcrumbs").children
+        );
+        // Clearing the navbar
+        navbar.innerHTML = "";
+
+        let index = 0;
+        let directory = [];
+        // compare each route with the relative one and returns the index where was found it
+        absoluteRoute.map((relRoute, i) => {
+          if (relRoute.textContent === relativeRoute) {
+            index = i;
+          }
+        });
+
+        absoluteRoute.map((relRoute, i) => {
+          if (i <= index) {
+            directory.push(relRoute.textContent);
+          }
+        });
+        directory = directory.join("\\");
+        UI.renderRoute(directory);
+
+        const filesContainer = document.querySelector(".files-container");
+        // Emptying the files container
+        filesContainer.innerHTML = "";
+
+        API.getFilesAndFolders(directory).then(filesAndFolders => {
+          filesAndFolders.map(info => {
+            // Rendering the info into the UI
+            UI.renderFilesAndFolders(info);
+          });
+
+          UI.filesAndFoldersEventHandler(filesAndFolders, menu);
+        });
+      }
+    });
   });
 
   API.getFilesAndFolders(DIRECTORY).then(filesAndFolders => {
@@ -301,24 +372,7 @@ document.addEventListener("DOMContentLoaded", () => {
       UI.renderFilesAndFolders(info);
     });
 
-    // Listener for file type
-    let files = document.querySelectorAll(".file");
-    files.forEach(file =>
-      file.addEventListener("contextmenu", event => {
-        UI.optionsHandler(filesAndFolders, event, menu);
-      })
-    );
-
-    // Listener for folder type
-    let folders = document.querySelectorAll(".directory");
-    folders.forEach(folder =>
-      folder.addEventListener("contextmenu", event => {
-        UI.optionsHandler(filesAndFolders, event, menu);
-      })
-    );
-
-    // Hide the menu when the mouse leave the menu
-    menu.addEventListener("mouseleave", UI.hideMenu);
+    UI.filesAndFoldersEventHandler(filesAndFolders, menu);
   });
 });
 

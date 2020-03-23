@@ -3,6 +3,8 @@ const morgan = require("morgan");
 const path = require("path");
 const { exec, execSync, spawnSync } = require("child_process");
 
+const chalk = require("chalk");
+
 const app = express();
 
 app.set("port", 3000);
@@ -27,7 +29,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/files", (req, res) => {
-  const directoryPath = path.join(__dirname, req.query.directory);
+  // console.log(chalk.blue(req.query.directory));
+  const directoryPath = path.join(req.query.directory);
   const commandResults = execSync("ls -l", { cwd: directoryPath })
     .toString()
     .split("\n");
@@ -65,7 +68,6 @@ app.get("/api/files", (req, res) => {
 
 app.put("/api/files/rename", (req, res) => {
   const currentWorkDir = path.join(__dirname, req.query.directory);
-  console.log(currentWorkDir);
   const newName = req.query.newName;
   const oldName = req.query.oldName;
   try {
@@ -79,13 +81,13 @@ app.put("/api/files/rename", (req, res) => {
 });
 
 app.get("/api/files/route", (req, res) => {
-  const filename = req.query.file;
-  const directoryPath = {
-    cwd: path.join(__dirname, filename)
-  };
-  res.json(directoryPath);
+  const { directoryRoute } = req.query;
+  console.log(`\n${chalk.magenta(directoryRoute)}`);
+  res.status(200).send(directoryRoute);
 });
 
 const port = process.env.PORT || 3000;
 
-app.listen("3000", () => console.log(`Our app is running on port ${port}`));
+app.listen("3000", () =>
+  console.log(chalk.yellow(`>>> Our app is running on port ${port} <<<`))
+);

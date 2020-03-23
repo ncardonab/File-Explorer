@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/ncardonab/File-Explorer#readme",
   "dependencies": {
+    "chalk": "^3.0.0",
     "express": "^4.17.1",
     "morgan": "^1.9.1"
   },
