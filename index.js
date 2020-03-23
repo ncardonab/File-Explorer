@@ -40,7 +40,7 @@ app.get("/api/files", (req, res) => {
   let fileFolderList = [];
 
   results.map(result => {
-    result = result.split(" ");
+    result = result.split(" ").filter(result => result !== "");
     if (result[0].slice(0, 1) === "-") {
       const file = {
         filename: result[8].slice(0, result[8].indexOf(".")),
