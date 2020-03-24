@@ -73,12 +73,19 @@ class UI {
    */
   static renderFilesAndFolders(info) {
     // Creates the card
+    const { type, name, extension } = info;
+    const filename = `${name}${extension}`;
+    const truncatedFilename =
+      filename.length > 8 ? `${filename.slice(0, 8)}...` : filename;
+    const folderName = `${name}`;
+    const truncatedFoldername =
+      folderName.length > 10 ? `${folderName.slice(0, 10)}...` : folderName;
     const icon =
-      info.type === "file"
+      type === "file"
         ? `<i class="far fa-file-word"></i>
-           <p>${info.name}${info.extension}</p>`
+           <p>${truncatedFilename}</p>`
         : `<i class="fas fa-folder"></i>
-           <p>${info.name}</p>`;
+           <p>${truncatedFoldername}</p>`;
 
     const card = `
     <div class="${info.type}">
