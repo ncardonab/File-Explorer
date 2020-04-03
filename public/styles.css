@@ -97,7 +97,7 @@ body {
   justify-content: space-around;
 }
 
-.side-bar.change {
+.side-bar.active {
   transform: translateX(-22rem);
   transition: all 0.8s;
 }
@@ -110,15 +110,15 @@ body {
   transition: all 0.8s;
 }
 
-.change .line-1 {
+.active .line-1 {
   transform: rotateZ(-45deg) translate(-5px, 4px);
   background-color: var(--main-color);
 }
-.change .line-2 {
+.active .line-2 {
   background-color: var(--main-color);
   opacity: 0;
 }
-.change .line-3 {
+.active .line-3 {
   transform: rotateZ(45deg) translate(-5px, -4px);
   background-color: var(--main-color);
 }

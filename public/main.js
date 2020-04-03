@@ -30,18 +30,38 @@ class UI {
     UI.showMenu(event);
 
     const options = menu.children;
+    const propertiesOption = options[0];
+    const renameOption = options[1];
+    const changePermissions = options[2];
+    const changeOwner = options[3];
+    const deleteFile = options[4];
 
     const properties = API.getFileOrFolder(filesAndFolders, event)[0];
+    const sidebar = document.querySelector(".side-bar");
 
-    const propertiesOption = options[0];
-    propertiesOption.addEventListener("click", () => {
+    // Callbacks
+    const propertiesClicked = () => {
+      if (!sidebar.classList.contains("active")) UI.foldSidebar();
       UI.renderFileOrFolderProperties(properties);
-    });
+    };
 
-    const renameOption = options[1];
-    renameOption.addEventListener("click", () => {
+    const renameClicked = () => {
+      if (!sidebar.classList.contains("active")) UI.foldSidebar();
       UI.rename(properties);
-    });
+    };
+
+    // Event listeners
+    propertiesOption.addEventListener("click", propertiesClicked);
+
+    renameOption.addEventListener("click", renameClicked);
+
+    //HIGHLIGHT: This block of code is very important, because, when the right-click menu disappears we want that the addEvenListeners do not accumulate themself and as a consecuence has a unspected behaviour
+    if (menu.classList.contains("off")) {
+      console.log("the menu has the class off");
+      UI.foldSidebar();
+      propertiesOption.removeEventListener("click", propertiesClicked);
+      renameOption.removeEventListener("click", renameClicked);
+    }
   }
 
   /**
@@ -72,7 +92,6 @@ class UI {
    * @param {Array} info
    */
   static renderFilesAndFolders(info) {
-    // Creates the card
     const { type, name, extension } = info;
     const filename = `${name}${extension}`;
     const truncatedFilename =
@@ -87,8 +106,9 @@ class UI {
         : `<i class="fas fa-folder"></i>
            <p>${truncatedFoldername}</p>`;
 
+    // Creates the card
     const card = `
-    <div class="${info.type}">
+    <div class="${type}">
       ${icon}
     </div>`;
 
@@ -98,13 +118,19 @@ class UI {
   }
 
   /**
-   * @method unfoldSidebar
+   * @method foldSidebar
    * @description Method that unfold the sidebar once the hamburguer menu was clicked
    */
-  static unfoldSidebar() {
+  static foldSidebar() {
     const sidebar = document.querySelector(".side-bar");
-    document.querySelector(".hamburguer-menu").classList.toggle("change");
-    sidebar.classList.toggle("change");
+    const hamburguer = document.querySelector(".hamburguer-menu");
+    if (sidebar.classList.contains("active")) {
+      hamburguer.classList.remove("active");
+      sidebar.classList.remove("active");
+    } else {
+      hamburguer.classList.add("active");
+      sidebar.classList.add("active");
+    }
   }
 
   /**
@@ -113,7 +139,6 @@ class UI {
    * @param {object} properties
    */
   static renderFileOrFolderProperties(properties) {
-    UI.unfoldSidebar();
     const sidebar = document.querySelector(".side-bar");
 
     const card = document.createElement("div");
@@ -153,7 +178,6 @@ class UI {
   static rename(properties) {
     const { name, type, extension } = properties;
 
-    UI.unfoldSidebar();
     const inputForm = `
     <div class="rename-form">
       <h4>If it's a file don't forget the extension</h4>
@@ -203,21 +227,37 @@ class UI {
    * @param {Element} menu
    */
   static filesAndFoldersEventHandler(filesAndFolders, menu) {
-    // Listener for file type
-    let files = document.querySelectorAll(".file");
-    files.forEach(file =>
-      file.addEventListener("contextmenu", event => {
-        UI.menuOptionsHandler(filesAndFolders, event, menu);
-      })
-    );
+    const filesContainer = document.querySelector(".files-container");
 
-    // Listener for folder type
-    let folders = document.querySelectorAll(".directory");
-    folders.forEach(folder =>
-      folder.addEventListener("contextmenu", event => {
+    filesContainer.addEventListener("contextmenu", event => {
+      let classes = event.target.classList;
+      // Delegation
+      if (
+        classes.contains("fa-folder") ||
+        classes.contains("directory") ||
+        classes.contains("fa-file-word") ||
+        classes.contains("file")
+      ) {
+        UI.showMenu(event);
         UI.menuOptionsHandler(filesAndFolders, event, menu);
-      })
-    );
+      }
+    });
+
+    // Listener for file type
+    // let files = document.querySelectorAll(".file");
+    // files.forEach(file =>
+    //   file.addEventListener("contextmenu", event => {
+    //     UI.menuOptionsHandler(filesAndFolders, event, menu);
+    //   })
+    // );
+
+    // // Listener for folder type
+    // let folders = document.querySelectorAll(".directory");
+    // folders.forEach(folder =>
+    //   folder.addEventListener("contextmenu", event => {
+    //     UI.menuOptionsHandler(filesAndFolders, event, menu);
+    //   })
+    // );
   }
 }
 
@@ -357,10 +397,11 @@ document.addEventListener("DOMContentLoaded", () => {
         directory = directory.join("\\");
         UI.renderRoute(directory);
 
-        const filesContainer = document.querySelector(".files-container");
         // Emptying the files container
+        const filesContainer = document.querySelector(".files-container");
         filesContainer.innerHTML = "";
 
+        // Filling the files-container with the new information from the new route
         API.getFilesAndFolders(directory).then(filesAndFolders => {
           filesAndFolders.map(info => {
             // Rendering the info into the UI
@@ -391,4 +432,4 @@ window.addEventListener("contextmenu", event => {
 // Hamburguer menu function unfolds sidebar
 document
   .querySelector(".hamburguer-menu")
-  .addEventListener("click", UI.unfoldSidebar);
+  .addEventListener("click", UI.foldSidebar);
